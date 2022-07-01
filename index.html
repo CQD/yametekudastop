@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>YametekudaStop!</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3.0, user-scalable=1">
+<meta name="description" content="Sorrymasen!">
+<link rel="icon" type="image/png" href="asacoco.png">
+
+<style>
+:root,html,body{
+    padding:0;
+    margin:0;
+    text-align:center;
+    color:#eee;
+    background-color: #ef6c00;
+    font-weight: 800;
+}
+body{
+    padding:30px;
+    z-index:0;
+    position:absolute;
+    top:0;
+    left:0;
+    bottom: 0;
+    right: 0;
+    font-size:90px;
+
+    display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body::before{
+    background-image: url(asacoco.png);
+    background-size: 70px;
+    background-repeat: repeat;
+    content:"";
+    top:0;
+    left:0;
+    bottom: 0;
+    right: 0;
+    opacity: 0.1;
+    position:absolute;
+    z-index: -1;
+}
+
+img{
+    max-width:90vw;
+    max-height:90vh;
+    border-radius: 10px;
+    overflow: hidden;
+}
+</style>
+</head>
+<body id="main">
+<span id="placeholder">YametekudaStop!</span>
+
+<script>
+const items = [
+{
+    "type": "image",
+    "url": "1.webp",
+    "link": "https://www.reddit.com/r/Hololive/comments/inty3a/coco_has_had_it_enough_of_our_bullshit/",
+},
+{
+    "type": "image",
+    "url": "2.jpg",
+    "link": "https://www.pixiv.net/artworks/84625587",
+},
+// {"type": "text", "text": "YametekudaStop!"},
+// {"type": "text", "text": "やめてくだストップ！"},
+{"type": "youtube", "id": "59YIGtnyefQ", "start": 1790},
+{"type": "youtube", "id": "3G9pydXEJhc", "start": 26},
+{"type": "youtube", "id": "BdYTQhkg4IE", "start": 2169},
+{"type": "youtube", "id": "JkWASn2RKls"},
+];
+
+let index = parseInt(window.location.hash.replace('#', ''));
+if(isNaN(index)){
+    index = Math.floor(Math.random() * items.length);
+}
+
+const item = items[index];
+
+const main = document.getElementById('main');
+const placeholder = document.getElementById('placeholder');
+const renderers = {
+    "image": (item) => {
+        const link = document.createElement('a');
+        link.href = item.link;
+
+        const img = document.createElement('img');
+        img.src = item.url;
+
+        link.appendChild(img);
+        main.textContent = '';
+        main.appendChild(link);
+    },
+    "text": (item) => {
+        const span = document.createElement('a');
+        span.textContent = item.text;
+        main.appendChild(span);
+    },
+    "youtube": (item) => {
+        const wrapper = document.createElement('div');
+        wrapper.style.objectFit = "cover";
+        wrapper.style.backgroundColor = 'red';
+
+        const yt = document.createElement('iframe');
+        yt.src = `https://www.youtube.com/embed/${item.id}${item.start ? "?start="+item.start : ""}`;
+        yt.width = 560;
+        yt.height = 315;
+        yt.frameborder = 0;
+        yt.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+        yt.allowFullscreen = true;
+
+        yt.style.height = 'min(100%, 100vw / 16 * 9)';
+        yt.style.width = 'min(100%, 100vh / 9 * 16)';
+        yt.style.maxWidth = '100%';
+        yt.style.maxHeight = '100%';
+
+        wrapper.appendChild(yt);
+        main.appendChild(yt);
+    },
+}
+
+renderers[item.type](item);
+placeholder.remove();
+
+</script>
+</body>
+</html>
